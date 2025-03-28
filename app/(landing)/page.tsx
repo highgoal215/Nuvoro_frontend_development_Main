@@ -1,15 +1,11 @@
 "use client";
-import { TalentedLandingData } from "@/app/data/icon/super-admin-panel/talentedlanding";
 import { Talented_Footer } from "@/components/talent-component/footer";
-import Landing_Component from "@/components/talent-component/Landing_component";
 import { OrganizationsList } from "@/components/talent-component/organization/organization";
 import { JobsComponent } from "@/components/talent-component/organization/jobs";
 import { FeaturedTalents } from "@/components/talent-component/organization/talents";
-import TrendskillsComponent from "@/components/talent-component/Trendskills";
-import { Button, Progress } from "@heroui/react";
+
+import { Button} from "@heroui/react";
 import Image from "next/image";
-import { organizationData } from "../data/icon/organizationitems";
-import { talentsdata } from "../data/icon/talents";
 
 export default function Home() {
   return (
@@ -73,10 +69,10 @@ export default function Home() {
           </div>
         </div>
         <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 justify-between items-center pt-8 sm:pt-16 md:pt-24 px-4 sm:px-8">
-          <div className="w-full sm:w-1/3">
+          <div className="w-full  sm:w-1/3">
             <OrganizationsList />
           </div>
-          <div className="w-full sm:w-1/3">
+          <div className="w-full  sm:w-1/3">
             <JobsComponent />
           </div>
           <div className="w-full sm:w-1/3">

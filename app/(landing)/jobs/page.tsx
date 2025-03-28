@@ -1,4 +1,4 @@
 "use client";
 export default function JobsLandingPage() {
-  return <div>fddkjhfd</div>;
+  return <div>Jobs</div>;
 }
