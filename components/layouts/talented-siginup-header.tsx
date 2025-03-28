@@ -1,5 +1,5 @@
-import React from "react";
-import logoLanding from "../../assets/svg/logo.svg";
+import React, { useState } from "react";
+import logoLanding from "@/assets/svg/logo.svg";
 import Image from "next/image";
 import {
   Navbar,
@@ -12,8 +12,9 @@ import {
   Link,
   Button,
   cn,
-  toggle,
 } from "@heroui/react";
+import MyInput from "../my-input";
+import { Search } from "lucide-react";
 
 export const AcmeLogo = () => {
   return (
@@ -29,9 +30,9 @@ export const AcmeLogo = () => {
   );
 };
 
-export default function TalentedLandingHeader() {
+export default function TalentedSignupHeader() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-
+  const [searchQuery, setSearchQuery] = useState("");
   const menuItems = [
     "Talents",
     "Organizations",
@@ -50,9 +51,8 @@ export default function TalentedLandingHeader() {
       isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
       classNames={{
-        base: cn("w-full justify-between p-2 border-none text-black"),
+        base: cn("w-full justify-between p-2 border-none"),
         wrapper: cn("max-w-[1760px] mx-auto "),
-        toggleIcon: cn("text-green-500"),
       }}
     >
       <NavbarContent>
@@ -122,9 +122,22 @@ export default function TalentedLandingHeader() {
         </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
-        {/* <NavbarItem className="hidden lg:flex">
-          <Link href="#">Login</Link>
-        </NavbarItem> */}
+        <MyInput
+          id="search"
+          className="h-[42px] w-58"
+          classNames={{
+            innerWrapper: cn("pl-8"),
+          }}
+          type="text"
+          placeholder="Search users..."
+          variant="bordered"
+          radius="sm"
+          isClearable
+          startContent={
+            <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+          }
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
         <NavbarItem>
           <Button as={Link} color="primary" href="#" variant="flat">
             Sign In

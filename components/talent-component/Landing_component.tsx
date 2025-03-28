@@ -7,8 +7,8 @@ import {
   CardFooter,
   Divider,
   Link,
-  Image,
 } from "@heroui/react";
+import Image from "next/image";
 
 export default function Landing_Component({
   icon,
@@ -16,17 +16,15 @@ export default function Landing_Component({
   description,
 }: TalentedLandingDatas) {
   return (
-    <Card className="flex justify-center items-center w-full sm:max-w-[300px] lg:max-w-[400px] p-4 sm:p-6">
-      <div className="flex flex-col items-center gap-4 w-full">
+    <Card className="flex justify-center items-center w-full sm:max-w-[300px] lg:max-w-[400px] p-4 sm:p-6 hover:shadow-lg transition-shadow duration-300">
+      <div className="flex flex-col items-start gap-4 w-full">
         <CardHeader className="flex justify-center items-center p-0">
           <Image
-            alt="heroui logo"
+            alt="icon"
             height={32}
             width={32}
-            className="sm:h-[40px] sm:w-[40px] "
-            radius="sm"
+            className="sm:h-[40px] sm:w-[40px]"
             src={icon}
-
           />
         </CardHeader>
         <CardBody className="flex justify-center items-center p-0">

@@ -1,14 +1,12 @@
+"use client";
 import { TalentedLandingData } from "@/app/data/icon/super-admin-panel/talentedlanding";
-import { TrendingSkills } from "@/app/data/icon/super-admin-panel/trendskills";
-import TalentedLandingHeader from "@/components/layouts/Talented-Landing-header";
-import { Talented_Footer } from "@/components/Talent_component/footer";
-import Landing_Component from "@/components/Talent_component/Landing_component";
-import TrendskillsComponent from "@/components/Talent_component/Trendskills";
+import { Talented_Footer } from "@/components/talent-component/footer";
+import Landing_Component from "@/components/talent-component/Landing_component";
+import TrendskillsComponent from "@/components/talent-component/Trendskills";
 import { Button, Progress } from "@heroui/react";
-import { Key } from "lucide-react";
 import Image from "next/image";
 
-export default function Talentedlanging_pages() {
+export default function TalentedLandingPage() {
   return (
     <div className="w-full min-h-screen bg-white">
       <div className="flex flex-col justify-center items-center pt-4 sm:pt-8 px-4 sm:px-8">
