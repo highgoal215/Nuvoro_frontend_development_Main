@@ -1,5 +1,4 @@
 "use client";
-import { Talented_Footer } from "@/components/talent-component/footer";
 import { OrganizationsList } from "@/components/talent-component/organization/organization";
 import { JobsComponent } from "@/components/talent-component/organization/jobs";
 import { FeaturedTalents } from "@/components/talent-component/organization/talents";
@@ -8,10 +7,6 @@ import { Button } from "@heroui/react";
 import Image from "next/image";
 import { JobsData } from "../data/icon/jobsItems";
 import { organizationData } from "../data/icon/organizationitems";
-import { Card, CardBody } from "@heroui/react";
-import { cn } from "tailwind-variants";
-import { Key } from "lucide-react";
-import { title } from "process";
 import { talentsdata } from "../data/icon/talents";
 
 export default function Home() {
