@@ -1,5 +1,4 @@
 "use client";
-import TalentedLandingHeader from "@/components/layouts/talented-landing-header";
 import TalentedSignupHeader from "@/components/layouts/talented-siginup-header";
 import { Talented_Footer } from "@/components/talent-component/footer";
 
