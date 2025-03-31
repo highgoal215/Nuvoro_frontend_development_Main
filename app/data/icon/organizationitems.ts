@@ -1,14 +1,16 @@
 import { OrganizationComponentItems } from "@/types";
+import organization1 from "@/assets/svg/organization1.svg";
+import organization2 from "@/assets/svg/organization2.svg";
 
 export const organizationData: OrganizationComponentItems[] = [
   {
-    name: "Tech Innovators Inc.",
-    activity: "Posted a new job opening",
-    icon: "building",
+    icon: organization1.src,
+    title: "Tech Innovators Inc.",
+    description: "Posted a new job opening",
   },
   {
-    name: "Future Systems Ltd.",
-    activity: "Shared company milestone",
-    icon: "file",
+    icon: organization2.src,
+    title: "Future Systems Ltd.",
+    description: "Shared company milestone",
   },
 ];
