@@ -21,9 +21,9 @@ export interface TrendingSkillsItems{
   percentage: string;
 }
 export interface OrganizationComponentItems {
-  name: string;
-  activity: string;
   icon: "building" | "file";
+  title: string;
+  description: string;
 }
 export interface JobsItems {
   title: string;
@@ -36,9 +36,9 @@ export interface JobsItems {
   }>;
 }
 export interface TalentsItems {
+  icon: string;
   name: string;
   role: string;
-  avatar: string;
 }
 export interface OrgLandingComponentItems {
   icon: string;

@@ -52,7 +52,7 @@ export default function TalentedSignupHeader() {
       onMenuOpenChange={setIsMenuOpen}
       classNames={{
         base: cn("w-full justify-between p-2 border-none"),
-        wrapper: cn("max-w-[1760px] mx-auto "),
+        wrapper: cn("w-full max-w-[1440px] mx-auto "),
       }}
     >
       <NavbarContent>

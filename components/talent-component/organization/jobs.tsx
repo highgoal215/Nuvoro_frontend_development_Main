@@ -1,37 +1,33 @@
-import { JobsData } from "@/app/data/icon/jobsItems";
-import { Card, Badge, Button } from "@heroui/react";
+import { JobsItems } from "@/types";
+import { Badge } from "@heroui/react";
 
-export function JobsComponent() {
+export function JobsComponent({
+  title,
+  company,
+  type,
+  location,
+  skills,
+}: JobsItems) {
   return (
-    <Card className="flex flex-col justify-between p-4 sm:p-6 gap-4">
-      <p className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Latest Jobs</p>
-      <div className="space-y-4 sm:space-y-6">
-        {JobsData.map((job, index) => (
-          <div
-            key={index}
-            className="pb-4 sm:pb-6 border-b last:border-0 last:pb-0"
-          >
-            <p className="text-base sm:text-lg font-semibold">{job.title}</p>
-            <p className="text-sm sm:text-base text-gray-600 mt-1">
-              {job.company} • {job.type} • {job.location}
-            </p>
-            <div className="flex flex-wrap gap-2 ">
-              {job.skills.map((skill, skillIndex) => (
-                <Badge
-                  key={skillIndex}
-                  variant="flat"
-                  className={`${skill.color} border-0 text-xs sm:text-sm`}
-                >
-                  {skill.name}
-                </Badge>
-              ))}
-            </div>
-          </div>
-        ))}
-        <Button className="w-full" variant="flat">
-          View All Jobs
-        </Button>
+    <div className="flex w-full flex-col justify-around">
+      <div className="flex flex-col gap-1 sm:gap-2">
+        <p className="text-sm sm:text-base font-medium">{title}</p>
+        <p className="text-xs sm:text-sm text-gray-600">
+          {company} • {type} • {location}
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {skills.map((skill, index) => (
+            <Badge
+              key={index}
+              variant="flat"
+              className={`${skill.color} border-0 text-xs sm:text-sm`}
+            >
+              {skill.name}
+            </Badge>
+          ))}
+        </div>
+        <hr/>
       </div>
-    </Card>
+    </div>
   );
 }

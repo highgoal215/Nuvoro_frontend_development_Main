@@ -1,15 +1,22 @@
 "use client";
 
-import { Input, Button } from "@heroui/react";
+import { Input, Button, cn } from "@heroui/react";
 // import { Input } from "@/components/ui/input";
 // import { Button } from "@/components/ui/button";
 // import { Separator } from "@/components/ui/separator";
 import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+
 export function Talented_Footer() {
   return (
-    <footer className="flex w-full flex-col bg-white border-t">
+    <footer
+      className={cn(
+        "flex w-full flex-col bg-white border-t",
+        "w-full justify-between p-2 border-none",
+        "w-full max-w-[1440px] mx-auto"
+      )}
+    >
       <div className="mx-auto max-w-7xl px-6 py-12 md:flex md:items-center md:justify-between lg:px-8">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           {/* Logo and Tagline */}

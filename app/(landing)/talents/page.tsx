@@ -52,8 +52,8 @@ export default function TalentedLandingPage() {
           );
         })}
       </div>
-      <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 justify-between items-center pt-12 sm:pt-24 pb-12 sm:pb-[192px] bg-[#F9FAFB] px-4 sm:px-8">
-        <div className="flex flex-1 flex-col gap-4 w-full lg:w-auto">
+      <div className="flex flex-col  lg:flex-row gap-8 lg:gap-12 justify-between items-center pt-12 sm:pt-24 pb-12 sm:pb-[192px] bg-[#F9FAFB]  sm:px-8">
+        <div className="flex flex-1 flex-col gap-4 w-full lg:w-auto px-8">
           <div className="text-[24px] sm:text-[30px]">Dashboard Preview</div>
           <div className="flex flex-col gap-4 bg-white p-4 rounded-lg">
             <div>Your Match level</div>
@@ -117,9 +117,6 @@ export default function TalentedLandingPage() {
             Register to Unlock Tailored Opportunities
           </Button>
         </div>
-      </div>
-      <div className="flex flex-col gap-4 w-full bg-white justify-between items-center px-4 sm:px-8 py-8">
-        <Talented_Footer />
       </div>
     </div>
   );

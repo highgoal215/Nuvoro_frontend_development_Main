@@ -15,8 +15,8 @@ export default function OrgLandingComponent({
   button
 }: OrgLandingComponentItems) {
   return (
-    <Card className="flex justify-center items-center w-full sm:max-w-[300px] lg:max-w-[400px] p-4 sm:p-6 hover:shadow-lg transition-shadow duration-300">
-      <div className="flex flex-col justify-between items-center gap-4 w-full">
+    <Card className="flex justify-center items-center w-full sm:max-w-[300px] lg:max-w-[400px] p-4 sm:p-6 hover:shadow-lg  transform transition duration-300 hover:scale-105 shadow-md border-2 border-gray-200">
+      <div className="flex flex-col justify-between items-center gap-4 w-full ">
         <CardHeader className="flex justify-center items-center p-0">
           <Image
             alt="icon"
@@ -36,7 +36,11 @@ export default function OrgLandingComponent({
             {description}
           </p>
         </CardFooter>
-        <Button color="success">{button}</Button>
+        <div className="w-full">
+          <Button color="success" className="w-full">
+            {button}
+          </Button>
+        </div>
       </div>
     </Card>
   );
