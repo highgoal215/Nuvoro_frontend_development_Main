@@ -5,7 +5,9 @@ import { Camera } from "lucide-react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-
+import { DatePicker } from "@heroui/react";
+import { parseDate, getLocalTimeZone } from "@internationalized/date";
+import { useDateFormatter } from "@react-aria/i18n";
 // Lazy load heavy components
 const DynamicSelect = dynamic(
   () => import("@nextui-org/react").then((mod) => mod.Select),
@@ -31,6 +33,8 @@ export default function Register1Page() {
   const [interests, setInterests] = useState<string[]>([]);
   const [avatar, setAvatar] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [value, setValue] = useState(parseDate("2024-04-04"));
+  let formatter = useDateFormatter({ dateStyle: "full" });
   const [formData, setFormData] = useState({
     fullName: "",
     day: "",
@@ -44,16 +48,16 @@ export default function Register1Page() {
     about: "",
   });
   const router = useRouter();
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  // Simulate login - Replace with actual authentication
-  if (formData) {
-    router.push("/register2");
-    console.log("success!");
-  } else {
-    console.log("failed!");
-  }
-};
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    // Simulate login - Replace with actual authentication
+    if (formData) {
+      router.push("/register2");
+      console.log("success!");
+    } else {
+      console.log("failed!");
+    }
+  };
   // Memoize handlers
   const handleAvatarClick = useCallback(() => {
     fileInputRef.current?.click();
@@ -94,43 +98,17 @@ const handleSubmit = async (e: React.FormEvent) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   }, []);
 
-  // Memoize computed values
-  const years = useMemo(
-    () => Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i),
-    []
-  );
-
-  const months = useMemo(
-    () => [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ],
-    []
-  );
-
-  const days = useMemo(() => Array.from({ length: 31 }, (_, i) => i + 1), []);
-
   return (
-    <main className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-sm p-6 md:p-8">
-        <h1 className="text-2xl font-semibold mb-2">
+    <main className="min-h-screen bg-gray-50 py-4 sm:py-8 px-2 sm:px-4">
+      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-sm p-4 sm:p-6 md:p-8">
+        <h1 className="text-xl sm:text-2xl font-semibold mb-2">
           Step 1: Tell Us About Yourself
         </h1>
-        <p className="text-gray-500 mb-8">
+        <p className="text-sm sm:text-base text-gray-500 mb-6 sm:mb-8">
           Start by sharing your basic details to build your profile.
         </p>
 
-        <div className="flex justify-center mb-8">
+        <div className="flex justify-center mb-6 sm:mb-8">
           <div className="relative">
             <input
               type="file"
@@ -141,7 +119,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             />
             <button
               type="button"
-              className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
+              className="w-20 h-20 sm:w-24 sm:h-24 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
               onClick={handleAvatarClick}
               aria-label="Upload profile picture"
             >
@@ -155,7 +133,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                   priority
                 />
               ) : (
-                <Camera className="w-8 h-8 text-gray-400" />
+                <Camera className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" />
               )}
             </button>
             <p className="text-xs text-gray-500 text-center mt-2">
@@ -164,75 +142,52 @@ const handleSubmit = async (e: React.FormEvent) => {
           </div>
         </div>
 
-        <form className="space-y-6">
+        <form className="space-y-4 sm:space-y-6">
           <div>
             <DynamicInput
               label="Full Name"
               placeholder="Enter your full name"
               value={formData.fullName}
               onChange={(e) => handleInputChange("fullName", e.target.value)}
+              classNames={{
+                input: "text-sm sm:text-base",
+                label: "text-sm sm:text-base",
+              }}
             />
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
-            <div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex">
+              <DatePicker
+                className="w-full max-w-auto"
+                label="Date of Birth"
+                value={value}
+                onChange={() => setValue}
+                classNames={{
+                  input: "text-sm sm:text-base",
+                  label: "text-sm sm:text-base",
+                }}
+              />
+            </div>
+            <div className="flex ">
               <DynamicSelect
-                label="Day"
-                placeholder="Day"
-                selectedKeys={formData.day ? [formData.day] : []}
-                onChange={(e) => handleInputChange("day", e.target.value)}
+                label="Gender"
+                placeholder="Select gender"
+                selectedKeys={formData.gender ? [formData.gender] : []}
+                onChange={(e) => handleInputChange("gender", e.target.value)}
+                classNames={{
+                  trigger: "text-sm sm:text-base",
+                  label: "text-sm sm:text-base",
+                }}
               >
-                {days.map((day) => (
-                  <SelectItem key={day} value={String(day)}>
-                    {day}
-                  </SelectItem>
-                ))}
+                <SelectItem value="male">Male</SelectItem>
+                <SelectItem value="female">Female</SelectItem>
+                <SelectItem value="other">Other</SelectItem>
+                <SelectItem value="prefer-not-to-say">
+                  Prefer not to say
+                </SelectItem>
               </DynamicSelect>
             </div>
-            <div>
-              <DynamicSelect
-                label="Month"
-                placeholder="Month"
-                selectedKeys={formData.month ? [formData.month] : []}
-                onChange={(e) => handleInputChange("month", e.target.value)}
-              >
-                {months.map((month) => (
-                  <SelectItem key={month} value={month.toLowerCase()}>
-                    {month}
-                  </SelectItem>
-                ))}
-              </DynamicSelect>
-            </div>
-            <div>
-              <DynamicSelect
-                label="Year"
-                placeholder="Year"
-                selectedKeys={formData.year ? [formData.year] : []}
-                onChange={(e) => handleInputChange("year", e.target.value)}
-              >
-                {years.map((year) => (
-                  <SelectItem key={year} value={String(year)}>
-                    {year}
-                  </SelectItem>
-                ))}
-              </DynamicSelect>
-            </div>
-          </div>
-
-          <div>
-            <DynamicSelect
-              label="Gender"
-              placeholder="Select gender"
-              selectedKeys={formData.gender ? [formData.gender] : []}
-              onChange={(e) => handleInputChange("gender", e.target.value)}
-            >
-              <SelectItem value="male">Male</SelectItem>
-              <SelectItem value="female">Female</SelectItem>
-              <SelectItem value="other">Other</SelectItem>
-              <SelectItem value="prefer-not-to-say">
-                Prefer not to say
-              </SelectItem>
-            </DynamicSelect>
           </div>
 
           <div>
@@ -242,6 +197,10 @@ const handleSubmit = async (e: React.FormEvent) => {
               placeholder="Enter your email"
               value={formData.email}
               onChange={(e) => handleInputChange("email", e.target.value)}
+              classNames={{
+                input: "text-sm sm:text-base",
+                label: "text-sm sm:text-base",
+              }}
             />
           </div>
 
@@ -251,6 +210,10 @@ const handleSubmit = async (e: React.FormEvent) => {
               placeholder="Select your country"
               selectedKeys={formData.country ? [formData.country] : []}
               onChange={(e) => handleInputChange("country", e.target.value)}
+              classNames={{
+                trigger: "text-sm sm:text-base",
+                label: "text-sm sm:text-base",
+              }}
             >
               <SelectItem value="us">United States</SelectItem>
               <SelectItem value="uk">United Kingdom</SelectItem>
@@ -265,6 +228,10 @@ const handleSubmit = async (e: React.FormEvent) => {
               placeholder="Enter your city or region"
               value={formData.city}
               onChange={(e) => handleInputChange("city", e.target.value)}
+              classNames={{
+                input: "text-sm sm:text-base",
+                label: "text-sm sm:text-base",
+              }}
             />
           </div>
 
@@ -274,6 +241,10 @@ const handleSubmit = async (e: React.FormEvent) => {
               placeholder="Select ethnicity"
               selectedKeys={formData.ethnicity ? [formData.ethnicity] : []}
               onChange={(e) => handleInputChange("ethnicity", e.target.value)}
+              classNames={{
+                trigger: "text-sm sm:text-base",
+                label: "text-sm sm:text-base",
+              }}
             >
               <SelectItem value="asian">Asian</SelectItem>
               <SelectItem value="black">Black</SelectItem>
@@ -290,12 +261,16 @@ const handleSubmit = async (e: React.FormEvent) => {
             <DynamicInput
               label="About You"
               placeholder="Write a short bio about yourself"
-              className="h-32"
+              className="h-24 sm:h-32"
               value={formData.about}
               onChange={(e) => handleInputChange("about", e.target.value)}
+              classNames={{
+                input: "text-sm sm:text-base",
+                label: "text-sm sm:text-base",
+              }}
             />
             <div className="text-right">
-              <span className="text-sm text-gray-500">
+              <span className="text-xs sm:text-sm text-gray-500">
                 {formData.about.length}/256
               </span>
             </div>
@@ -313,13 +288,17 @@ const handleSubmit = async (e: React.FormEvent) => {
                   e.currentTarget.value = "";
                 }
               }}
+              classNames={{
+                input: "text-sm sm:text-base",
+                label: "text-sm sm:text-base",
+              }}
             />
             <div className="flex gap-2 flex-wrap">
               {interests.map((interest) => (
                 <Chip
                   key={interest}
                   variant="flat"
-                  className="cursor-pointer"
+                  className="cursor-pointer text-sm sm:text-base"
                   onClose={() =>
                     setInterests((prev) => prev.filter((i) => i !== interest))
                   }
@@ -331,7 +310,11 @@ const handleSubmit = async (e: React.FormEvent) => {
           </div>
 
           <div className="flex justify-end pt-4">
-            <Button color="primary" onClick={handleSubmit} >
+            <Button
+              color="primary"
+              onClick={handleSubmit}
+              className="w-full sm:w-auto text-sm sm:text-base"
+            >
               Next
               <span className="ml-2">→</span>
             </Button>
