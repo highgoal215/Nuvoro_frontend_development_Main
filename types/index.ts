@@ -1,4 +1,3 @@
-import path from "node:path";
 import { SVGProps } from "react";
 
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
@@ -11,12 +10,12 @@ export interface AdminPanelIcon {
   icon: string;
   path: string;
 }
-export interface TalentedLandingDatas{
+export interface TalentedLandingDatas {
   icon: string;
   title: string;
   description: string;
 }
-export interface TrendingSkillsItems{
+export interface TrendingSkillsItems {
   title: string;
   percentage: string;
 }
@@ -45,4 +44,38 @@ export interface OrgLandingComponentItems {
   title: string;
   description: string;
   button: string;
+}
+export interface Certification {
+  title: string;
+  institution: string;
+  year: string;
+  status: string;
+  description: string;
+}
+export interface JobExperience {
+  jobTitle: string;
+  companyName: string;
+  location: string;
+  jobType: string;
+  salary: string;
+  isCurrentJob: boolean;
+  startDate: {
+    year: string;
+    month: string;
+  };
+  endDate: {
+    year: string;
+    month: string;
+  };
+  description: string;
+  enjoyed: string[];
+  challenges: string[];
+}
+
+export interface Project {
+  title: string;
+  type: string;
+  status: string;
+  budgetRange: string;
+  description: string;
 }

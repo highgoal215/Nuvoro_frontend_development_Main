@@ -1,42 +1,125 @@
 "use client";
-import { useState, useRef } from "react";
-import Image from "next/image";
+import { useState, useRef, useMemo, useCallback } from "react";
 import { Button, Input, Select, SelectItem, Chip } from "@nextui-org/react";
 import { Camera } from "lucide-react";
+import Image from "next/image";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
+
+// Lazy load heavy components
+const DynamicSelect = dynamic(
+  () => import("@nextui-org/react").then((mod) => mod.Select),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-10 bg-gray-100 rounded-lg animate-pulse" />
+    ),
+  }
+);
+
+const DynamicInput = dynamic(
+  () => import("@nextui-org/react").then((mod) => mod.Input),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-10 bg-gray-100 rounded-lg animate-pulse" />
+    ),
+  }
+);
+
 export default function Register1Page() {
+  const [interests, setInterests] = useState<string[]>([]);
   const [avatar, setAvatar] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [interests, setInterests] = useState<string[]>([]);
-  const handleAvartarClick = () => {
+  const [formData, setFormData] = useState({
+    fullName: "",
+    day: "",
+    month: "",
+    year: "",
+    gender: "",
+    email: "",
+    country: "",
+    city: "",
+    ethnicity: "",
+    about: "",
+  });
+  const router = useRouter();
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  // Simulate login - Replace with actual authentication
+  if (formData) {
+    router.push("/register2");
+    console.log("success!");
+  } else {
+    console.log("failed!");
+  }
+};
+  // Memoize handlers
+  const handleAvatarClick = useCallback(() => {
     fileInputRef.current?.click();
-  };
-  const hanleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        alert("File size must be less than 2MB");
-        event.target.value = ""; // Reset the input
-        return;
-      }
+  }, []);
 
-      // Check if file is an image
-      if (!file.type.startsWith("image/")) {
-        alert("Please upload an image file");
-        event.target.value = ""; // Reset the input
-        return;
-      }
+  const handleFileChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file) {
+        if (file.size > 2 * 1024 * 1024) {
+          alert("File size must be less than 2MB");
+          event.target.value = "";
+          return;
+        }
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setAvatar(e.target?.result as string);
-      };
-      reader.onerror = () => {
-        alert("Error reading file");
-        event.target.value = ""; // Reset the input
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+        if (!file.type.startsWith("image/")) {
+          alert("Please upload an image file");
+          event.target.value = "";
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setAvatar(e.target?.result as string);
+        };
+        reader.onerror = () => {
+          alert("Error reading file");
+          event.target.value = "";
+        };
+        reader.readAsDataURL(file);
+      }
+    },
+    []
+  );
+
+  // Memoize form handlers
+  const handleInputChange = useCallback((field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  }, []);
+
+  // Memoize computed values
+  const years = useMemo(
+    () => Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i),
+    []
+  );
+
+  const months = useMemo(
+    () => [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ],
+    []
+  );
+
+  const days = useMemo(() => Array.from({ length: 31 }, (_, i) => i + 1), []);
+
   return (
     <main className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-sm p-6 md:p-8">
@@ -52,20 +135,24 @@ export default function Register1Page() {
             <input
               type="file"
               ref={fileInputRef}
-              onChange={hanleFileChange}
+              onChange={handleFileChange}
+              accept="image/*"
               className="hidden"
             />
             <button
               type="button"
               className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
-              onClick={handleAvartarClick}
+              onClick={handleAvatarClick}
               aria-label="Upload profile picture"
             >
               {avatar ? (
                 <Image
                   src={avatar}
                   alt="Avatar"
+                  width={96}
+                  height={96}
                   className="w-full h-full object-cover rounded-full"
+                  priority
                 />
               ) : (
                 <Camera className="w-8 h-8 text-gray-400" />
@@ -79,96 +166,115 @@ export default function Register1Page() {
 
         <form className="space-y-6">
           <div>
-            <Input label="Full Name" placeholder="Enter your full name" />
+            <DynamicInput
+              label="Full Name"
+              placeholder="Enter your full name"
+              value={formData.fullName}
+              onChange={(e) => handleInputChange("fullName", e.target.value)}
+            />
           </div>
 
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <Select label="Day" placeholder="Day">
-                {Array.from({ length: 31 }, (_, i) => (
-                  <SelectItem key={i + 1} value={String(i + 1)}>
-                    {i + 1}
+              <DynamicSelect
+                label="Day"
+                placeholder="Day"
+                selectedKeys={formData.day ? [formData.day] : []}
+                onChange={(e) => handleInputChange("day", e.target.value)}
+              >
+                {days.map((day) => (
+                  <SelectItem key={day} value={String(day)}>
+                    {day}
                   </SelectItem>
                 ))}
-              </Select>
+              </DynamicSelect>
             </div>
             <div>
-              <Select label="Month" placeholder="Month">
-                {[
-                  "January",
-                  "February",
-                  "March",
-                  "April",
-                  "May",
-                  "June",
-                  "July",
-                  "August",
-                  "September",
-                  "October",
-                  "November",
-                  "December",
-                ].map((month) => (
+              <DynamicSelect
+                label="Month"
+                placeholder="Month"
+                selectedKeys={formData.month ? [formData.month] : []}
+                onChange={(e) => handleInputChange("month", e.target.value)}
+              >
+                {months.map((month) => (
                   <SelectItem key={month} value={month.toLowerCase()}>
                     {month}
                   </SelectItem>
                 ))}
-              </Select>
+              </DynamicSelect>
             </div>
             <div>
-              <Select label="Year" placeholder="Year">
-                {Array.from({ length: 100 }, (_, i) => (
-                  <SelectItem
-                    key={i}
-                    value={String(new Date().getFullYear() - i)}
-                  >
-                    {new Date().getFullYear() - i}
+              <DynamicSelect
+                label="Year"
+                placeholder="Year"
+                selectedKeys={formData.year ? [formData.year] : []}
+                onChange={(e) => handleInputChange("year", e.target.value)}
+              >
+                {years.map((year) => (
+                  <SelectItem key={year} value={String(year)}>
+                    {year}
                   </SelectItem>
                 ))}
-              </Select>
+              </DynamicSelect>
             </div>
           </div>
 
           <div>
-            <Select label="Gender" placeholder="Select gender">
+            <DynamicSelect
+              label="Gender"
+              placeholder="Select gender"
+              selectedKeys={formData.gender ? [formData.gender] : []}
+              onChange={(e) => handleInputChange("gender", e.target.value)}
+            >
               <SelectItem value="male">Male</SelectItem>
               <SelectItem value="female">Female</SelectItem>
               <SelectItem value="other">Other</SelectItem>
               <SelectItem value="prefer-not-to-say">
                 Prefer not to say
               </SelectItem>
-            </Select>
+            </DynamicSelect>
           </div>
 
           <div>
-            <Input
+            <DynamicInput
               label="Email Address"
               type="email"
               placeholder="Enter your email"
+              value={formData.email}
+              onChange={(e) => handleInputChange("email", e.target.value)}
             />
           </div>
 
           <div>
-            <Select
+            <DynamicSelect
               label="Country of Residence"
               placeholder="Select your country"
+              selectedKeys={formData.country ? [formData.country] : []}
+              onChange={(e) => handleInputChange("country", e.target.value)}
             >
               <SelectItem value="us">United States</SelectItem>
               <SelectItem value="uk">United Kingdom</SelectItem>
               <SelectItem value="ca">Canada</SelectItem>
               <SelectItem value="au">Australia</SelectItem>
-              {/* Add more countries as needed */}
-            </Select>
+            </DynamicSelect>
           </div>
 
           <div>
-            <Input
+            <DynamicInput
               label="City/Region"
               placeholder="Enter your city or region"
+              value={formData.city}
+              onChange={(e) => handleInputChange("city", e.target.value)}
             />
           </div>
 
           <div>
-            <Select label="Ethnicity" placeholder="Select ethnicity">
+            <DynamicSelect
+              label="Ethnicity"
+              placeholder="Select ethnicity"
+              selectedKeys={formData.ethnicity ? [formData.ethnicity] : []}
+              onChange={(e) => handleInputChange("ethnicity", e.target.value)}
+            >
               <SelectItem value="asian">Asian</SelectItem>
               <SelectItem value="black">Black</SelectItem>
               <SelectItem value="hispanic">Hispanic</SelectItem>
@@ -177,29 +283,47 @@ export default function Register1Page() {
               <SelectItem value="prefer-not-to-say">
                 Prefer not to say
               </SelectItem>
-            </Select>
+            </DynamicSelect>
           </div>
 
           <div>
-            <Input
+            <DynamicInput
               label="About You"
               placeholder="Write a short bio about yourself"
               className="h-32"
+              value={formData.about}
+              onChange={(e) => handleInputChange("about", e.target.value)}
             />
             <div className="text-right">
-              <span className="text-sm text-gray-500">0/256</span>
+              <span className="text-sm text-gray-500">
+                {formData.about.length}/256
+              </span>
             </div>
           </div>
 
           <div>
-            <Input
+            <DynamicInput
               label="Interests"
               placeholder="Add interests (e.g. AI Marketing #Design)"
               className="mb-2"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && e.currentTarget.value) {
+                  e.preventDefault();
+                  setInterests((prev) => [...prev, e.currentTarget.value]);
+                  e.currentTarget.value = "";
+                }
+              }}
             />
             <div className="flex gap-2 flex-wrap">
               {interests.map((interest) => (
-                <Chip key={interest} variant="flat" className="cursor-pointer">
+                <Chip
+                  key={interest}
+                  variant="flat"
+                  className="cursor-pointer"
+                  onClose={() =>
+                    setInterests((prev) => prev.filter((i) => i !== interest))
+                  }
+                >
                   {interest}
                 </Chip>
               ))}
@@ -207,7 +331,7 @@ export default function Register1Page() {
           </div>
 
           <div className="flex justify-end pt-4">
-            <Button color="primary">
+            <Button color="primary" onClick={handleSubmit} >
               Next
               <span className="ml-2">→</span>
             </Button>
