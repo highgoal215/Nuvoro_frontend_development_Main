@@ -51,7 +51,7 @@ export default function TalentedSignupHeader() {
       isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
       classNames={{
-        base: cn("w-full justify-between p-2 border-none"),
+        base: cn("w-full justify-between  p-2 border-none"),
         wrapper: cn("w-full max-w-[1440px] mx-auto "),
       }}
     >
@@ -65,7 +65,7 @@ export default function TalentedSignupHeader() {
         </NavbarBrand>
       </NavbarContent>
 
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
+      <NavbarContent className="hidden sm:flex gap-8" justify="center">
         <NavbarItem>
           <Link
             color="foreground"
@@ -139,7 +139,7 @@ export default function TalentedSignupHeader() {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
         <NavbarItem>
-          <Button as={Link} color="primary" href="#" variant="flat">
+          <Button as={Link} color="primary" href="/login" variant="flat">
             Sign In
           </Button>
         </NavbarItem>

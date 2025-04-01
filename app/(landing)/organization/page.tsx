@@ -5,6 +5,7 @@ import Landing_Component from "@/components/talent-component/Landing_component";
 import { Talented_Footer } from "@/components/talent-component/footer";
 import OrgLandingComponent from "@/components/talent-component/organization/landing-component";
 import { OrgLandingComponentData } from "@/app/data/icon/org_data";
+import { organizationData } from "@/app/data/icon/organizationitems";
 
 export default function OrganizationLandingPage() {
   return (

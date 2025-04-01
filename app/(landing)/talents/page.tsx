@@ -40,7 +40,7 @@ export default function TalentedLandingPage() {
           />
         </div>
       </div>
-      <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 justify-between items-center pt-12 sm:pt-24 px-4 sm:px-8">
+      <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 justify-between items-center pt-12 sm:pt-24 px-4 sm:px-8 ">
         {TalentedLandingData.map((item, index) => {
           return (
             <Landing_Component
@@ -55,9 +55,9 @@ export default function TalentedLandingPage() {
       <div className="flex flex-col  lg:flex-row gap-8 lg:gap-12 justify-between items-center pt-12 sm:pt-24 pb-12 sm:pb-[192px] bg-[#F9FAFB]  sm:px-8">
         <div className="flex flex-1 flex-col gap-4 w-full lg:w-auto px-8">
           <div className="text-[24px] sm:text-[30px]">Dashboard Preview</div>
-          <div className="flex flex-col gap-4 bg-white p-4 rounded-lg">
+          <div className="flex flex-col gap-4 bg-white px-4 rounded-lg transform transition duration-300 hover:scale-105 shadow-md h-full py-10">
             <div>Your Match level</div>
-            <div className="flex flex-col w-full">
+            <div className="flex flex-col w-full transfo">
               <Progress
                 classNames={{
                   track: "drop-shadow-md border border-default",
@@ -90,19 +90,30 @@ export default function TalentedLandingPage() {
         <div className="flex flex-1 flex-col w-full lg:w-auto">
           <div className="text-[18px] sm:text-[20px]">Trending Skills</div>
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div className="flex flex-1 flex-col gap-4 w-full sm:w-auto p-4 rounded-lg">
-              <TrendskillsComponent title="Data Analysis" percentage="+15%" />
-              <TrendskillsComponent title="AL/ML" percentage="+28%" />
+            <div className="flex flex-1 flex-col gap-4 w-full sm:w-auto p-4 rounded-lg ">
+              <div className="transform transition duration-300 hover:scale-105 shadow-md h-full">
+                <TrendskillsComponent title="Data Analysis" percentage="+15%" />
+              </div>
+              <div className="transform transition duration-300 hover:scale-105 shadow-md h-full">
+                <TrendskillsComponent title="AL/ML" percentage="+28%" />
+              </div>
             </div>
-            <div className="flex flex-1 flex-col gap-4 w-full sm:w-auto p-4 rounded-lg">
-              <TrendskillsComponent
-                title="Project Management"
-                percentage="+10%"
-              />
-              <TrendskillsComponent
+            <div
+              className="flex flex-1 flex-col gap-4 w-full sm:w-auto p-4 rounded-lg
+           "
+            >
+              <div className="transform transition duration-300 hover:scale-105 shadow-md h-full">
+                <TrendskillsComponent
+                  title="Project Management"
+                  percentage="+10%"
+                />
+              </div>
+              <div className="transform transition duration-300 hover:scale-105 shadow-md h-full">
+                <TrendskillsComponent
                 title="Digital Marketing"
-                percentage="+18%"
-              />
+                  percentage="+18%"
+                />
+              </div>
             </div>
           </div>
         </div>

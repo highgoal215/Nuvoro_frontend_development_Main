@@ -1,28 +1,28 @@
-import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/24/outline";
-import { useRouter } from "next/navigation";
+"use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button, cn } from "@nextui-org/react";
-import { Lock, Eye, EyeOff ,Mail} from "lucide-react";
+
+import { Lock, Eye, EyeOff, Mail } from "lucide-react";
 import MyInput from "@/components/my-input";
 
 export default function SignIn() {
- const router = useRouter();
+  const router = useRouter();
 
- const [showPassword, setShowPassword] = useState(false);
- const [email, setEmail] = useState("");
- const [password, setPassword] = useState(""); 
- 
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     // Simulate login - Replace with actual authentication
     if (email && password) {
-      router.push("/");
+      router.push("/register1");
       console.log("success!");
     } else {
       console.log("failed!");
     }
-  }; 
+  };
   return (
     <div className="h-auto w-1/3 flex items-center justify-center border-r-3 shadow-lg bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
