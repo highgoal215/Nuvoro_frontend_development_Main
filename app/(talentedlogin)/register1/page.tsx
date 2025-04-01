@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef, useMemo, useCallback } from "react";
-import { Button, Input, Select, SelectItem, Chip } from "@nextui-org/react";
+import { Button, SelectItem, Chip } from "@nextui-org/react";
 import { Camera } from "lucide-react";
 import Image from "next/image";
 import dynamic from "next/dynamic";

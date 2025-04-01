@@ -2,9 +2,9 @@
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useMemo } from "react";
+import { talentsdata } from "../data/icon/talents";
 import { JobsData } from "../data/icon/jobsItems";
 import { organizationData } from "../data/icon/organizationitems";
-import { talentsdata } from "../data/icon/talents";
 
 // Dynamically import heavy components
 const DynamicOrganizationsList = dynamic(

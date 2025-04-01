@@ -1,13 +1,16 @@
 "use client";
+import dynamic from "next/dynamic";
 import { useState, useMemo, useCallback, memo } from "react";
 import { useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { X, Plus, Briefcase, Trophy, Upload } from "lucide-react";
+import Image from "next/image";
+import { Certification, JobExperience, Project } from "@/types";
+import SaveImage from "@/assets/svg/org/save.svg";
 import {
   Select,
   SelectContent,
@@ -15,9 +18,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Image from "next/image";
-import { Certification, JobExperience, Project } from "@/types";
-import SaveImage from "@/assets/svg/org/save.svg";
 
 // Dynamically import heavy components
 const DynamicCard = dynamic(
@@ -81,6 +81,7 @@ const SkillsSection = memo(
     </section>
   )
 );
+
 SkillsSection.displayName = "SkillsSection";
 const CertificationsSection = memo(
   ({
@@ -192,7 +193,9 @@ const CertificationsSection = memo(
     </section>
   )
 );
+
 CertificationsSection.displayName = "CertificationsSection";
+
 export default function TalentRegister4() {
   const [skills, setSkills] = useState<string[]>(["JavaScript", "React"]);
   const [newSkill, setNewSkill] = useState("");
@@ -310,9 +313,12 @@ export default function TalentRegister4() {
       setCertifications((prev) => {
         const newCertifications = [...prev];
         newCertifications[index] = {
+
           ...newCertifications[index],
           [field]: value,
+          
         };
+
         return newCertifications;
       });
     },

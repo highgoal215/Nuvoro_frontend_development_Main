@@ -1,11 +1,9 @@
 "use client";
-import { Button } from "@heroui/react";
-import { TalentedLandingData } from "@/app/data/icon/super-admin-panel/talentedlanding";
 import Landing_Component from "@/components/talent-component/Landing_component";
-import { Talented_Footer } from "@/components/talent-component/footer";
 import OrgLandingComponent from "@/components/talent-component/organization/landing-component";
+import { TalentedLandingData } from "@/app/data/icon/super-admin-panel/talentedlanding";
 import { OrgLandingComponentData } from "@/app/data/icon/org_data";
-import { organizationData } from "@/app/data/icon/organizationitems";
+import { Button } from "@heroui/react";
 
 export default function OrganizationLandingPage() {
   return (
