@@ -1,8 +1,13 @@
 "use client";
+import { useState, useMemo, useCallback, memo } from "react";
+import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import { X, Plus, Briefcase, Trophy, Upload } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -10,15 +15,184 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { X, Plus, Briefcase, Trophy, Upload, Router } from "lucide-react";
-import { useState } from "react";
-import { Card } from "@nextui-org/react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { Certification, JobExperience, Project } from "@/types";
 import SaveImage from "@/assets/svg/org/save.svg";
 
+// Dynamically import heavy components
+const DynamicCard = dynamic(
+  () => import("@nextui-org/react").then((mod) => mod.Card),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="p-8 bg-white rounded-lg shadow-sm animate-pulse" />
+    ),
+  }
+);
+
+// Add these component definitions before the main component
+const SkillsSection = memo(
+  ({
+    skills,
+    newSkill,
+    setNewSkill,
+    addSkill,
+    removeSkill,
+  }: {
+    skills: string[];
+    newSkill: string;
+    setNewSkill: (value: string) => void;
+    addSkill: () => void;
+    removeSkill: (skill: string) => void;
+  }) => (
+    <section className="bg-white p-6 rounded-lg shadow-sm space-y-4">
+      <h2 className="text-xl font-semibold text-gray-900">Hard Skills</h2>
+      <div className="space-y-4">
+        <div className="flex gap-2">
+          <Input
+            placeholder="Add a skill"
+            value={newSkill}
+            onChange={(e) => setNewSkill(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && addSkill()}
+          />
+          <Button onClick={addSkill}>
+            <Plus className="h-4 w-4 mr-2" />
+            Add
+          </Button>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {skills.map((skill) => (
+            <Badge
+              key={skill}
+              variant="secondary"
+              className="flex items-center gap-1 px-3 py-1"
+            >
+              {skill}
+              <button
+                onClick={() => removeSkill(skill)}
+                className="ml-1 hover:text-red-500"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </Badge>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+);
+SkillsSection.displayName = "SkillsSection";
+const CertificationsSection = memo(
+  ({
+    certifications,
+    handleCertificationChange,
+    addCertification,
+    removeCertification,
+    years,
+  }: {
+    certifications: Certification[];
+    handleCertificationChange: (
+      index: number,
+      field: keyof Certification,
+      value: string
+    ) => void;
+    addCertification: () => void;
+    removeCertification: (index: number) => void;
+    years: string[];
+  }) => (
+    <section className="bg-white p-6 rounded-lg shadow-sm space-y-6">
+      <h2 className="text-xl font-semibold text-gray-900">Certifications</h2>
+      {certifications.map((cert, index) => (
+        <div key={index} className="grid gap-4 border-b pb-6 last:border-0">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-medium">Certification {index + 1}</h3>
+            {index > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => removeCertification(index)}
+                className="text-red-500 hover:text-red-700"
+              >
+                <X className="h-4 w-4 mr-2" />
+                Remove
+              </Button>
+            )}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Input
+              placeholder="Certification title"
+              value={cert.title}
+              onChange={(e) =>
+                handleCertificationChange(index, "title", e.target.value)
+              }
+            />
+            <Input
+              placeholder="Institution name"
+              value={cert.institution}
+              onChange={(e) =>
+                handleCertificationChange(index, "institution", e.target.value)
+              }
+            />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Select
+              value={cert.year}
+              onValueChange={(value) =>
+                handleCertificationChange(index, "year", value)
+              }
+            >
+              <SelectTrigger>
+                <SelectValue
+                  placeholder="Year Obtained"
+                  className="bg-white z-0"
+                />
+              </SelectTrigger>
+              <SelectContent className="bg-white z-0">
+                {years.map((year) => (
+                  <SelectItem key={year} value={year}>
+                    {year}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select
+              value={cert.status}
+              onValueChange={(value) =>
+                handleCertificationChange(index, "status", value)
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent className="bg-white z-0">
+                <SelectItem value="completed">Completed</SelectItem>
+                <SelectItem value="in-progress">In Progress</SelectItem>
+                <SelectItem value="expired">Expired</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <Textarea
+            placeholder="Describe your key learnings and achievements"
+            className="min-h-[100px]"
+            value={cert.description}
+            onChange={(e) =>
+              handleCertificationChange(index, "description", e.target.value)
+            }
+          />
+        </div>
+      ))}
+      <Button
+        variant="outline"
+        className="w-full md:w-auto"
+        onClick={addCertification}
+      >
+        <Plus className="h-4 w-4 mr-2" />
+        Add Another Certification
+      </Button>
+    </section>
+  )
+);
+CertificationsSection.displayName = "CertificationsSection";
 export default function TalentRegister4() {
   const [skills, setSkills] = useState<string[]>(["JavaScript", "React"]);
   const [newSkill, setNewSkill] = useState("");
@@ -34,33 +208,120 @@ export default function TalentRegister4() {
     },
   ]);
 
-  const addSkill = () => {
+  // Memoize static data
+  const months = useMemo(
+    () => [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ],
+    []
+  );
+
+  const years = useMemo(
+    () =>
+      Array.from({ length: 50 }, (_, i) =>
+        (new Date().getFullYear() - i).toString()
+      ),
+    []
+  );
+
+  const jobTypes = useMemo(
+    () => [
+      "Full-time",
+      "Part-time",
+      "Contract",
+      "Freelance",
+      "Internship",
+      "Remote",
+    ],
+    []
+  );
+
+  const projectTypes = useMemo(
+    () => [
+      "Individual",
+      "Collaboration",
+      "Team Lead",
+      "Consulting",
+      "Research",
+      "Open Source",
+    ],
+    []
+  );
+
+  const budgetRanges = useMemo(
+    () => [
+      "Under $1,000",
+      "$1,000 - $5,000",
+      "$5,000 - $10,000",
+      "$10,000 - $50,000",
+      "Over $50,000",
+      "Non-commercial",
+    ],
+    []
+  );
+
+  const enjoymentFactors = useMemo(
+    () => [
+      "Tasks and responsibilities",
+      "Work environment",
+      "Company culture",
+      "Opportunities for growth",
+      "Compensation and benefits",
+    ],
+    []
+  );
+
+  const challengeFactors = useMemo(
+    () => [
+      "Salary was not competitive",
+      "Lack of interest in the work",
+      "Management or leadership issues",
+      "Limited opportunities for advancement",
+      "Work-life balance issues",
+    ],
+    []
+  );
+
+  // Memoize handlers
+  const addSkill = useCallback(() => {
     if (newSkill.trim() && !skills.includes(newSkill.trim())) {
-      setSkills([...skills, newSkill.trim()]);
+      setSkills((prev) => [...prev, newSkill.trim()]);
       setNewSkill("");
     }
-  };
+  }, [newSkill, skills]);
 
-  const removeSkill = (skillToRemove: string) => {
-    setSkills(skills.filter((skill) => skill !== skillToRemove));
-  };
+  const removeSkill = useCallback((skillToRemove: string) => {
+    setSkills((prev) => prev.filter((skill) => skill !== skillToRemove));
+  }, []);
 
-  const handleCertificationChange = (
-    index: number,
-    field: keyof Certification,
-    value: string
-  ) => {
-    const newCertifications = [...certifications];
-    newCertifications[index] = {
-      ...newCertifications[index],
-      [field]: value,
-    };
-    setCertifications(newCertifications);
-  };
+  const handleCertificationChange = useCallback(
+    (index: number, field: keyof Certification, value: string) => {
+      setCertifications((prev) => {
+        const newCertifications = [...prev];
+        newCertifications[index] = {
+          ...newCertifications[index],
+          [field]: value,
+        };
+        return newCertifications;
+      });
+    },
+    []
+  );
 
-  const addCertification = () => {
-    setCertifications([
-      ...certifications,
+  const addCertification = useCallback(() => {
+    setCertifications((prev) => [
+      ...prev,
       {
         title: "",
         institution: "",
@@ -69,12 +330,109 @@ export default function TalentRegister4() {
         description: "",
       },
     ]);
-  };
+  }, []);
 
-  const removeCertification = (index: number) => {
-    const newCertifications = certifications.filter((_, i) => i !== index);
-    setCertifications(newCertifications);
-  };
+  const removeCertification = useCallback((index: number) => {
+    setCertifications((prev) => prev.filter((_, i) => i !== index));
+  }, []);
+
+  const handleExperienceChange = useCallback(
+    (index: number, field: keyof JobExperience, value: any) => {
+      setExperiences((prev) => {
+        const newExperiences = [...prev];
+        if (field === "startDate" || field === "endDate") {
+          const [dateField, dateValue] = value;
+          newExperiences[index][field] = {
+            ...newExperiences[index][field],
+            [dateField]: dateValue,
+          };
+        } else {
+          newExperiences[index] = {
+            ...newExperiences[index],
+            [field]: value,
+          };
+        }
+        return newExperiences;
+      });
+    },
+    []
+  );
+
+  const handleProjectChange = useCallback(
+    (index: number, field: keyof Project, value: string) => {
+      setProjects((prev) => {
+        const newProjects = [...prev];
+        newProjects[index] = {
+          ...newProjects[index],
+          [field]: value,
+        };
+        return newProjects;
+      });
+    },
+    []
+  );
+
+  const addExperience = useCallback(() => {
+    setExperiences((prev) => [
+      ...prev,
+      {
+        jobTitle: "",
+        companyName: "",
+        location: "",
+        jobType: "",
+        salary: "",
+        isCurrentJob: false,
+        startDate: { year: "", month: "" },
+        endDate: { year: "", month: "" },
+        description: "",
+        enjoyed: [],
+        challenges: [],
+      },
+    ]);
+  }, []);
+
+  const addProject = useCallback(() => {
+    setProjects((prev) => [
+      ...prev,
+      {
+        title: "",
+        type: "",
+        status: "",
+        budgetRange: "",
+        description: "",
+      },
+    ]);
+  }, []);
+
+  const toggleFactor = useCallback(
+    (index: number, factor: string, type: "enjoyed" | "challenges") => {
+      setExperiences((prev) => {
+        const newExperiences = [...prev];
+        const factors = newExperiences[index][type];
+        const factorIndex = factors.indexOf(factor);
+
+        if (factorIndex === -1) {
+          factors.push(factor);
+        } else {
+          factors.splice(factorIndex, 1);
+        }
+
+        return newExperiences;
+      });
+    },
+    []
+  );
+
+  const handleFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files) {
+        const newFiles = Array.from(e.target.files);
+        setFiles((prev) => [...prev, ...newFiles]);
+      }
+    },
+    []
+  );
+
   const [experiences, setExperiences] = useState<JobExperience[]>([
     {
       jobTitle: "",
@@ -101,158 +459,6 @@ export default function TalentRegister4() {
     },
   ]);
 
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
-  const years = Array.from({ length: 50 }, (_, i) =>
-    (new Date().getFullYear() - i).toString()
-  );
-
-  const jobTypes = [
-    "Full-time",
-    "Part-time",
-    "Contract",
-    "Freelance",
-    "Internship",
-    "Remote",
-  ];
-
-  const projectTypes = [
-    "Individual",
-    "Collaboration",
-    "Team Lead",
-    "Consulting",
-    "Research",
-    "Open Source",
-  ];
-
-  const budgetRanges = [
-    "Under $1,000",
-    "$1,000 - $5,000",
-    "$5,000 - $10,000",
-    "$10,000 - $50,000",
-    "Over $50,000",
-    "Non-commercial",
-  ];
-
-  const enjoymentFactors = [
-    "Tasks and responsibilities",
-    "Work environment",
-    "Company culture",
-    "Opportunities for growth",
-    "Compensation and benefits",
-  ];
-
-  const challengeFactors = [
-    "Salary was not competitive",
-    "Lack of interest in the work",
-    "Management or leadership issues",
-    "Limited opportunities for advancement",
-    "Work-life balance issues",
-  ];
-
-  const handleExperienceChange = (
-    index: number,
-    field: keyof JobExperience,
-    value: any
-  ) => {
-    const newExperiences = [...experiences];
-    if (field === "startDate" || field === "endDate") {
-      const [dateField, dateValue] = value;
-      newExperiences[index][field] = {
-        ...newExperiences[index][field],
-        [dateField]: dateValue,
-      };
-    } else {
-      newExperiences[index] = {
-        ...newExperiences[index],
-        [field]: value,
-      };
-    }
-    setExperiences(newExperiences);
-  };
-
-  const handleProjectChange = (
-    index: number,
-    field: keyof Project,
-    value: string
-  ) => {
-    const newProjects = [...projects];
-    newProjects[index] = {
-      ...newProjects[index],
-      [field]: value,
-    };
-    setProjects(newProjects);
-  };
-
-  const addExperience = () => {
-    setExperiences([
-      ...experiences,
-      {
-        jobTitle: "",
-        companyName: "",
-        location: "",
-        jobType: "",
-        salary: "",
-        isCurrentJob: false,
-        startDate: { year: "", month: "" },
-        endDate: { year: "", month: "" },
-        description: "",
-        enjoyed: [],
-        challenges: [],
-      },
-    ]);
-  };
-
-  const addProject = () => {
-    setProjects([
-      ...projects,
-      {
-        title: "",
-        type: "",
-        status: "",
-        budgetRange: "",
-        description: "",
-      },
-    ]);
-  };
-
-  const toggleFactor = (
-    index: number,
-    factor: string,
-    type: "enjoyed" | "challenges"
-  ) => {
-    const newExperiences = [...experiences];
-    const factors = newExperiences[index][type];
-    const factorIndex = factors.indexOf(factor);
-
-    if (factorIndex === -1) {
-      factors.push(factor);
-    } else {
-      factors.splice(factorIndex, 1);
-    }
-
-    setExperiences(newExperiences);
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const newFiles = Array.from(e.target.files);
-      setFiles((prev) => [...prev, ...newFiles]);
-    }
-  };
   return (
     <main className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto space-y-8">
@@ -266,142 +472,21 @@ export default function TalentRegister4() {
           </p>
         </div>
 
-        {/* Hard Skills Section */}
-        <section className="bg-white p-6 rounded-lg shadow-sm space-y-4">
-          <h2 className="text-xl font-semibold text-gray-900">Hard Skills</h2>
-          <div className="space-y-4">
-            <div className="flex gap-2">
-              <Input
-                placeholder="Add a skill"
-                value={newSkill}
-                onChange={(e) => setNewSkill(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && addSkill()}
-              />
-              <Button onClick={addSkill}>
-                <Plus className="h-4 w-4 mr-2" />
-                Add
-              </Button>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {skills.map((skill) => (
-                <Badge
-                  key={skill}
-                  variant="secondary"
-                  className="flex items-center gap-1 px-3 py-1"
-                >
-                  {skill}
-                  <button
-                    onClick={() => removeSkill(skill)}
-                    className="ml-1 hover:text-red-500"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </Badge>
-              ))}
-            </div>
-          </div>
-        </section>
+        <SkillsSection
+          skills={skills}
+          newSkill={newSkill}
+          setNewSkill={setNewSkill}
+          addSkill={addSkill}
+          removeSkill={removeSkill}
+        />
 
-        {/* Certifications Section */}
-        <section className="bg-white p-6 rounded-lg shadow-sm space-y-6">
-          <h2 className="text-xl font-semibold text-gray-900">
-            Certifications
-          </h2>
-          {certifications.map((cert, index) => (
-            <div key={index} className="grid gap-4 border-b pb-6 last:border-0">
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg font-medium">
-                  Certification {index + 1}
-                </h3>
-                {index > 0 && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeCertification(index)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    <X className="h-4 w-4 mr-2" />
-                    Remove
-                  </Button>
-                )}
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input
-                  placeholder="Certification title"
-                  value={cert.title}
-                  onChange={(e) =>
-                    handleCertificationChange(index, "title", e.target.value)
-                  }
-                />
-                <Input
-                  placeholder="Institution name"
-                  value={cert.institution}
-                  onChange={(e) =>
-                    handleCertificationChange(
-                      index,
-                      "institution",
-                      e.target.value
-                    )
-                  }
-                />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
-                <Select 
-                  value={cert.year}
-                  onValueChange={(value) =>
-                    handleCertificationChange(index, "year", value)
-                  }
-                >
-                  <SelectTrigger >
-                    <SelectValue placeholder="Year Obtained"  className="bg-white z-0"/>
-                  </SelectTrigger>
-                  <SelectContent className="bg-white z-0">
-                    {[...Array(10)].map((_, i) => (
-                      <SelectItem key={2024 - i} value={(2024 - i).toString()}>
-                        {2024 - i}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Select
-                  value={cert.status}
-                  onValueChange={(value) =>
-                    handleCertificationChange(index, "status", value)
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Status" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white z-0">
-                    <SelectItem value="completed">Completed</SelectItem>
-                    <SelectItem value="in-progress">In Progress</SelectItem>
-                    <SelectItem value="expired">Expired</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <Textarea
-                placeholder="Describe your key learnings and achievements"
-                className="min-h-[100px]"
-                value={cert.description}
-                onChange={(e) =>
-                  handleCertificationChange(
-                    index,
-                    "description",
-                    e.target.value
-                  )
-                }
-              />
-            </div>
-          ))}
-          <Button
-            variant="outline"
-            className="w-full md:w-auto"
-            onClick={addCertification}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Add Another Certification
-          </Button>
-        </section>
+        <CertificationsSection
+          certifications={certifications}
+          handleCertificationChange={handleCertificationChange}
+          addCertification={addCertification}
+          removeCertification={removeCertification}
+          years={years}
+        />
 
         {/* Soft Skills Section */}
         <section className="bg-white p-6 rounded-lg shadow-sm space-y-4">
@@ -462,7 +547,7 @@ export default function TalentRegister4() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Select 
+                <Select
                   value={exp.location}
                   onValueChange={(value) =>
                     handleExperienceChange(index, "location", value)
@@ -771,7 +856,7 @@ export default function TalentRegister4() {
         </section>
         <div className="max-w-4xl mx-auto">
           <div className="space-y-8 ">
-            <Card className="p-8">
+            <DynamicCard className="p-8">
               <div className="flex justify-between items-center pb-4">
                 <h1 className="text-3xl font-bold text-gray-90 ">References</h1>
               </div>
@@ -826,7 +911,7 @@ export default function TalentRegister4() {
                   ))}
                 </div>
               )}
-            </Card>
+            </DynamicCard>
 
             <div className="flex justify-between items-center pt-6">
               <div className="flex justify-end pt-4">
@@ -841,7 +926,7 @@ export default function TalentRegister4() {
               <div className="flex justify-end pt-4 gap-2">
                 <Button color="primary">
                   <Image
-                    src={ SaveImage}
+                    src={SaveImage}
                     alt="save"
                     width={20}
                     height={20}

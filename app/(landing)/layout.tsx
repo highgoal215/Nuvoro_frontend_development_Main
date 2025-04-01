@@ -8,12 +8,12 @@ export default function TalentedLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col min-h-screen w-full max-w-[1440px] mx-auto">
+    <div className="flex flex-col gap-4 min-h-screen w-full max-w-[1440px] mx-auto bg-white">
       <div className="w-full px-4 sm:px-6 md:px-8">
         <TalentedSignupHeader />
       </div>
       <div className="flex-1 w-full">{children}</div>
-      <div className="w-full">
+      <div className=" flex w-full px-4 sm:px-6 md:px-8">
         <Talented_Footer />
       </div>
     </div>

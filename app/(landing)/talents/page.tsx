@@ -1,15 +1,93 @@
 "use client";
 import { TalentedLandingData } from "@/app/data/icon/super-admin-panel/talentedlanding";
-import { Talented_Footer } from "@/components/talent-component/footer";
-import Landing_Component from "@/components/talent-component/Landing_component";
-import TrendskillsComponent from "@/components/talent-component/Trendskills";
-import { Button, Progress } from "@heroui/react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
+import { useMemo } from "react";
+// Dynamically import heavy components
+const DynamicFooter = dynamic(
+  () =>
+    import("@/components/talent-component/footer").then(
+      (mod) => mod.Talented_Footer
+    ),
+  {
+    ssr: false,
+    loading: () => <div className="animate-pulse h-20 bg-gray-100" />,
+  }
+);
+
+const DynamicLandingComponent = dynamic(
+  () => import("@/components/talent-component/Landing_component"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="animate-pulse h-40 bg-gray-100 rounded-lg" />
+    ),
+  }
+);
+
+const DynamicTrendSkills = dynamic(
+  () => import("@/components/talent-component/Trendskills"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="animate-pulse h-20 bg-gray-100 rounded-lg" />
+    ),
+  }
+);
+
+const DynamicButton = dynamic(
+  () => import("@heroui/react").then((mod) => mod.Button),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="animate-pulse h-10 w-40 bg-gray-100 rounded-lg" />
+    ),
+  }
+);
+
+const DynamicProgress = dynamic(
+  () => import("@heroui/react").then((mod) => mod.Progress),
+  {
+    ssr: false,
+    loading: () => <div className="animate-pulse h-4 bg-gray-100 rounded-lg" />,
+  }
+);
 
 export default function TalentedLandingPage() {
+  // Memoize static data
+  const landingData = useMemo(() => TalentedLandingData, []);
+
+  // Memoize progress data
+  const progressData = useMemo(
+    () => ({
+      classNames: {
+        track: "drop-shadow-md border border-default",
+        indicator: "bg-gradient-to-r from-pink-500 to-yellow-500",
+        label: "tracking-wider font-medium text-default-600",
+        value: "text-foreground/60",
+      },
+      radius: "sm" as const,
+      showValueLabel: true,
+      size: "sm" as const,
+      value: 65,
+    }),
+    []
+  );
+
+  // Memoize trend skills data
+  const trendSkillsData = useMemo(
+    () => [
+      { title: "Data Analysis", percentage: "+15%" },
+      { title: "AL/ML", percentage: "+28%" },
+      { title: "Project Management", percentage: "+10%" },
+      { title: "Digital Marketing", percentage: "+18%" },
+    ],
+    []
+  );
+
   return (
-    <div className="w-full min-h-screen bg-white">
-      <div className="flex flex-col justify-center items-center pt-4 sm:pt-8 px-4 sm:px-8">
+    <div className="w-full  min-h-screen bg-white">
+      <div className="flex px-8 flex-col justify-center items-center pt-4 sm:pt-8  sm:px-8">
         <div className="flex font-Roboto text-[14px] sm:text-[16px] text-center">
           <p>
             Build a Meaningful Career on Our AI-Powered, Purpose-Driven Growth
@@ -26,31 +104,34 @@ export default function TalentedLandingPage() {
           </p>
         </div>
         <div className="flex pt-4 sm:pt-8">
-          <Button color="secondary" className="text-sm sm:text-base">
+          <DynamicButton color="secondary" className="text-sm sm:text-base">
             Register to Unlock Tailored Opportunities
-          </Button>
+          </DynamicButton>
         </div>
         <div className="flex w-full pt-8 sm:pt-14">
           <Image
             src="/IMG.svg"
             alt="image"
-            width={0}
-            height={0}
+            width={1200}
+            height={600}
+            priority
+            loading="eager"
             className="w-full h-auto"
+            quality={90}
+            placeholder="blur"
+            blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEyMDAiIGhlaWdodD0iNjAwIiBmaWxsPSIjZjBmMGYwIi8+PC9zdmc+"
           />
         </div>
       </div>
-      <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 justify-between items-center pt-12 sm:pt-24 px-4 sm:px-8 ">
-        {TalentedLandingData.map((item, index) => {
-          return (
-            <Landing_Component
-              key={index}
-              icon={item.icon}
-              title={item.title}
-              description={item.description}
-            />
-          );
-        })}
+      <div className="flex  flex-col sm:flex-row gap-4 sm:gap-8 justify-between items-center pt-12 sm:pt-24 px-4 sm:px-8 ">
+        {landingData.map((item, index) => (
+          <DynamicLandingComponent
+            key={index}
+            icon={item.icon}
+            title={item.title}
+            description={item.description}
+          />
+        ))}
       </div>
       <div className="flex flex-col  lg:flex-row gap-8 lg:gap-12 justify-between items-center pt-12 sm:pt-24 pb-12 sm:pb-[192px] bg-[#F9FAFB]  sm:px-8">
         <div className="flex flex-1 flex-col gap-4 w-full lg:w-auto px-8">
@@ -58,62 +139,39 @@ export default function TalentedLandingPage() {
           <div className="flex flex-col gap-4 bg-white px-4 rounded-lg transform transition duration-300 hover:scale-105 shadow-md h-full py-10">
             <div>Your Match level</div>
             <div className="flex flex-col w-full transfo">
-              <Progress
-                classNames={{
-                  track: "drop-shadow-md border border-default",
-                  indicator: "bg-gradient-to-r from-pink-500 to-yellow-500",
-                  label: "tracking-wider font-medium text-default-600",
-                  value: "text-foreground/60",
-                }}
-                label="Lose weight"
-                radius="sm"
-                showValueLabel={true}
-                size="sm"
-                value={65}
-              />
-              <Progress
-                classNames={{
-                  track: "drop-shadow-md border border-default",
-                  indicator: "bg-gradient-to-r from-pink-500 to-yellow-500",
-                  label: "tracking-wider font-medium text-default-600",
-                  value: "text-foreground/60",
-                }}
-                label="Lose weight"
-                radius="sm"
-                showValueLabel={true}
-                size="sm"
-                value={65}
-              />
+              <DynamicProgress {...progressData} label="Lose weight" />
+              <DynamicProgress {...progressData} label="Lose weight" />
             </div>
           </div>
         </div>
         <div className="flex flex-1 flex-col w-full lg:w-auto">
           <div className="text-[18px] sm:text-[20px]">Trending Skills</div>
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div className="flex flex-1 flex-col gap-4 w-full sm:w-auto p-4 rounded-lg ">
-              <div className="transform transition duration-300 hover:scale-105 shadow-md h-full">
-                <TrendskillsComponent title="Data Analysis" percentage="+15%" />
-              </div>
-              <div className="transform transition duration-300 hover:scale-105 shadow-md h-full">
-                <TrendskillsComponent title="AL/ML" percentage="+28%" />
-              </div>
+            <div className="flex bg-black/5 flex-1 flex-col gap-4 w-full sm:w-auto p-4 rounded-lg">
+              {trendSkillsData.slice(0, 2).map((skill, index) => (
+                <div
+                  key={index}
+                  className="transform transition duration-300 hover:scale-105 shadow-md h-full"
+                >
+                  <DynamicTrendSkills
+                    title={skill.title}
+                    percentage={skill.percentage}
+                  />
+                </div>
+              ))}
             </div>
-            <div
-              className="flex flex-1 flex-col gap-4 w-full sm:w-auto p-4 rounded-lg
-           "
-            >
-              <div className="transform transition duration-300 hover:scale-105 shadow-md h-full">
-                <TrendskillsComponent
-                  title="Project Management"
-                  percentage="+10%"
-                />
-              </div>
-              <div className="transform transition duration-300 hover:scale-105 shadow-md h-full">
-                <TrendskillsComponent
-                title="Digital Marketing"
-                  percentage="+18%"
-                />
-              </div>
+            <div className="flex flex-1 flex-col gap-4 w-full sm:w-auto p-4 rounded-lg">
+              {trendSkillsData.slice(2).map((skill, index) => (
+                <div
+                  key={index}
+                  className="transform transition duration-300 hover:scale-105 shadow-md h-full"
+                >
+                  <DynamicTrendSkills
+                    title={skill.title}
+                    percentage={skill.percentage}
+                  />
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -124,9 +182,9 @@ export default function TalentedLandingPage() {
           tailored opportunities today.
         </p>
         <div className="flex pb-4 sm:pb-6">
-          <Button color="secondary" className="text-sm sm:text-base">
+          <DynamicButton color="secondary" className="text-sm sm:text-base">
             Register to Unlock Tailored Opportunities
-          </Button>
+          </DynamicButton>
         </div>
       </div>
     </div>
