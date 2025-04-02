@@ -79,3 +79,32 @@ export interface Project {
   budgetRange: string;
   description: string;
 }
+
+export interface Project {  
+  title: string;
+  client: string;
+  budget: string;
+  duration: string;
+  skills: string[];
+}
+
+export interface Course {
+  title: string;
+  provider: string;
+  duration: string;
+  image: string;
+  providerLogo?: string;
+}
+
+export interface Post {
+  id: number;
+  author: {
+    name: string;
+    role: string;
+    avatar: string;
+  };
+  content: string;
+  likes: number;
+  comments: number;
+  timeAgo: string;
+}

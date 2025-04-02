@@ -63,10 +63,10 @@ export default function Home() {
   const memoizedTalentsData = useMemo(() => talentsdata, []);
 
   return (
-    <div className="flex w-full flex-col px-4 sm:px-6 md:px-8 gap-6 sm:gap-8 md:gap-10">
+    <div className="flex w-full flex-col ">
       {/* Hero Section */}
-      <div className="flex px-8 flex-col lg:flex-row justify-start items-start gap-6 sm:gap-8 lg:gap-10">
-        <div className="flex flex-1 flex-col gap-6 sm:gap-8 lg:gap-10">
+      <div className="flex  flex-col lg:flex-row justify-start items-start">
+        <div className="flex flex-1 px-8 flex-col gap-6 sm:gap-8 lg:gap-10">
           <div className="flex pt-8 sm:pt-12 lg:pt-[112px]">
             <p className="text-3xl sm:text-4xl md:text-5xl lg:text-[60px] font-bold">
               Empower Your Workforce with Nuvoro
@@ -78,7 +78,7 @@ export default function Home() {
               and succeed. Smarter, Faster, Better.
             </p>
           </div>
-          <div className="flex  flex-col sm:flex-row justify-between gap-4 sm:gap-6 pt-6 sm:pt-8 lg:pt-[32px]">
+          <div className="flex  flex-col p-4 sm:flex-row justify-between gap-4 sm:gap-6 pt-6 sm:pt-8 lg:pt-[32px]">
             <div className="flex w-full sm:w-1/2">
               <DynamicButton
                 color="secondary"
@@ -101,8 +101,8 @@ export default function Home() {
           <Image
             src="/Home.svg"
             alt="HomeImage"
-            width={800}
-            height={600}
+            width={0}
+            height={0}
             priority
             loading="eager"
             className="w-full h-auto"
